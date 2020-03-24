@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '8.0'
+
+target 'SGWiNetWSConfig_Example' do
+  pod 'SGWiNetWSConfig', :path => '../'
+
+  target 'SGWiNetWSConfig_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
