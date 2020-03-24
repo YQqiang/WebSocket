@@ -38,7 +38,7 @@
 
 /* Begin PBXFileReference section */
 		051B6532B4AAD4C2729AD0F6 /* Pods_SGWiNetWSConfig_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SGWiNetWSConfig_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		0D9FFD97DDBF4B541F6B77E6 /* SGWiNetWSConfig.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = SGWiNetWSConfig.podspec; path = ../SGWiNetWSConfig.podspec; sourceTree = "<group>"; };
+		0D9FFD97DDBF4B541F6B77E6 /* SGWiNetWSConfig.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = SGWiNetWSConfig.podspec; path = ../SGWiNetWSConfig.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		465A9061B3865837EE74FD98 /* Pods-SGWiNetWSConfig_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SGWiNetWSConfig_Tests.debug.xcconfig"; path = "Target Support Files/Pods-SGWiNetWSConfig_Tests/Pods-SGWiNetWSConfig_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		47BA0735B1BF677F6D0067F5 /* Pods-SGWiNetWSConfig_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SGWiNetWSConfig_Tests.release.xcconfig"; path = "Target Support Files/Pods-SGWiNetWSConfig_Tests/Pods-SGWiNetWSConfig_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		4E000C833D8AEF02F008DD39 /* Pods-SGWiNetWSConfig_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SGWiNetWSConfig_Example.release.xcconfig"; path = "Target Support Files/Pods-SGWiNetWSConfig_Example/Pods-SGWiNetWSConfig_Example.release.xcconfig"; sourceTree = "<group>"; };
@@ -62,8 +62,8 @@
 		6003F5BB195388D20070C39A /* Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tests.m; sourceTree = "<group>"; };
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
 		71719F9E1E33DC2100824A3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		7234820FD16C66D9B0422346 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		7D5FDADF13F1D648CC08BE43 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		7234820FD16C66D9B0422346 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		7D5FDADF13F1D648CC08BE43 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		99B54DEF60A83AC42ECE86A2 /* Pods_SGWiNetWSConfig_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SGWiNetWSConfig_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F813F6F56FB6BF50AD1C3CC3 /* Pods-SGWiNetWSConfig_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SGWiNetWSConfig_Example.debug.xcconfig"; path = "Target Support Files/Pods-SGWiNetWSConfig_Example/Pods-SGWiNetWSConfig_Example.debug.xcconfig"; sourceTree = "<group>"; };
@@ -193,7 +193,6 @@
 				465A9061B3865837EE74FD98 /* Pods-SGWiNetWSConfig_Tests.debug.xcconfig */,
 				47BA0735B1BF677F6D0067F5 /* Pods-SGWiNetWSConfig_Tests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -258,6 +257,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -346,10 +346,12 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-SGWiNetWSConfig_Example/Pods-SGWiNetWSConfig_Example-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/CocoaAsyncSocket/CocoaAsyncSocket.framework",
 				"${BUILT_PRODUCTS_DIR}/SGWiNetWSConfig/SGWiNetWSConfig.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaAsyncSocket.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SGWiNetWSConfig.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -1,0 +1,23 @@
+PODS:
+  - CocoaAsyncSocket (7.6.4)
+  - SGWiNetWSConfig (0.0.1):
+    - CocoaAsyncSocket
+
+DEPENDENCIES:
+  - SGWiNetWSConfig (from `../`)
+
+SPEC REPOS:
+  trunk:
+    - CocoaAsyncSocket
+
+EXTERNAL SOURCES:
+  SGWiNetWSConfig:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  CocoaAsyncSocket: 694058e7c0ed05a9e217d1b3c7ded962f4180845
+  SGWiNetWSConfig: 984c59c1dfeff3ebaf8f92dfc101100c690fba38
+
+PODFILE CHECKSUM: 4a73866ad5c3d1f135c44d13adb01e8ff97679dc
+
+COCOAPODS: 1.8.4
