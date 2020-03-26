@@ -6,16 +6,17 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <SocketRocket/SocketRocket.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface SGWiNetWSManager : NSObject
 
-- (void)open;
+@property (nonatomic, strong, readonly) SRWebSocket *socket;
 
-- (void)close;
+- (void)reConnectToUrl:(NSURL *)url complete:(void (^)(NSError *error))complete;
 
-- (void)send:(id)data;
+- (void)disConnectComplete:(void (^)(NSUInteger code , NSString *reason, BOOL wasClean))complete;
 
 @end
 

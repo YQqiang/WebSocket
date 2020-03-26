@@ -6,12 +6,13 @@
 //
 
 #import "SGWiNetWSManager.h"
-#import <SocketRocket/SocketRocket.h>
 #import <SGWiNetWSConfig/SGWiNetWSNotification.h>
 
 @interface SGWiNetWSManager ()<SRWebSocketDelegate>
 
 @property (nonatomic, strong) SRWebSocket *socket;
+@property (nonatomic, copy) void (^connectComplete)(NSError *error);
+@property (nonatomic, copy) void (^disconnectComplete)(NSUInteger code , NSString *reason, BOOL wasClean);
 
 @end
 
@@ -24,15 +25,18 @@
     return _socket;
 }
 
-- (instancetype)init {
-    if (self = [super init]) {
-        [self reConnectToUrl:[NSURL URLWithString:@"ws://11.11.11.1/ws/home/overview"]];
-    }
-    return self;
-}
+//- (instancetype)init {
+//    if (self = [super init]) {
+//        [self reConnectToUrl:[NSURL URLWithString:@"ws://11.11.11.1/ws/home/overview"] complete:^(NSError * _Nonnull error) {
+//        }];
+//    }
+//    return self;
+//}
 
-- (void)reConnectToUrl:(NSURL *)url {
+- (void)reConnectToUrl:(NSURL *)url complete:(void (^)(NSError *error))complete {
+    [self close];
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
+    self.connectComplete = complete;
     self.socket = [[SRWebSocket alloc] initWithURLRequest:request];
     self.socket.delegate = self;
     [self open];
@@ -44,28 +48,24 @@
     }
 }
 
-- (void)close {
-    [self.socket close];
+- (void)disConnectComplete:(void (^)(NSUInteger code , NSString *reason, BOOL wasClean))complete {
+    [self close];
+    self.disconnectComplete = complete;
 }
 
-- (void)send:(id)data {
-    [self.socket send:data];
+- (void)close {
+    if (self.socket.readyState == SR_OPEN) {
+        [self.socket close];
+    }
 }
 
 #pragma mark - SRWebSocketDelegate
 - (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message {
-    [self postNotification:SGWiNetWSDidOpenNotification
+    [self postNotification:SGWiNetWSDidReceiveMessageNotification
                     object:@{
                         @"webSocket":webSocket,
                         @"message":message
                     }];
-    NSString *msg = @"";
-    if ([message isKindOfClass:NSString.class]) {
-        msg = (NSString *)message;
-    } else if ([message isKindOfClass:NSData.class]) {
-        msg = [[NSString alloc] initWithData:(NSData *)message encoding:NSUTF8StringEncoding];
-    }
-    NSLog(@"### %s message %@", __func__, msg);
 }
 
 - (void)webSocketDidOpen:(SRWebSocket *)webSocket {
@@ -73,7 +73,7 @@
                     object:@{
                         @"webSocket":webSocket
                     }];
-    NSLog(@"### %s", __func__);
+    !self.connectComplete ?: self.connectComplete(nil);
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error {
@@ -82,7 +82,7 @@
                         @"webSocket":webSocket,
                         @"error":error
                     }];
-    NSLog(@"### %s", __func__);
+    !self.connectComplete ?: self.connectComplete(error);
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean {
@@ -92,7 +92,7 @@
                         @"reason":reason,
                         @"wasClean":@(wasClean)
                     }];
-    NSLog(@"### %s", __func__);
+    !self.disconnectComplete ?: self.disconnectComplete(code, reason, wasClean);
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didReceivePong:(NSData *)pongPayload {
@@ -101,8 +101,6 @@
                         @"webSocket":webSocket,
                         @"pongPayload":pongPayload
                     }];
-    NSString *message = [[NSString alloc] initWithData:pongPayload encoding:NSUTF8StringEncoding];
-    NSLog(@"### %s message = %@", __func__, message);
 }
 
 - (void)postNotification:(NSString *)name object:(id)object {

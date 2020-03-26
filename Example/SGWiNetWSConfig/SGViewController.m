@@ -7,37 +7,40 @@
 //
 
 #import "SGViewController.h"
-#import <SGWiNetWSConfig/SGWiNetWSManager.h>
+#import <SGWiNetWSConfig/SGWiNetWSService.h>
 
 @interface SGViewController ()
-
-@property (nonatomic, strong) SGWiNetWSManager *wsManager;
 
 @end
 
 @implementation SGViewController
 
-- (SGWiNetWSManager *)wsManager {
-    if (!_wsManager) {
-        _wsManager = [[SGWiNetWSManager alloc] init];
-    }
-    return _wsManager;
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [self reConnect];
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    [self wsManager];
-	
+- (void)reConnect {
+    [SGWiNetWSService.shareInstance reConnectToUrl:[NSURL URLWithString:@"ws://11.11.11.1/ws/home/overview"] complete:^(NSError * _Nonnull error) {
+        if (error) {
+            NSLog(@"连接失败 error = %@", error);
+        } else {
+            NSLog(@"连接成功");
+        }
+    }];
 }
 
 - (IBAction)connectAction:(UIButton *)sender {
-    [self.wsManager send:@"{\"lang\":\"zh_cn\",\"token\":\"\",\"service\":\"connect\"}"];
-}
-
-- (void)staList {
-    NSString *msg = @"\"lang\":\"zh_cn\",\"token\":\"1193_36c55764-8e88-477d-94aa-6601da7e4d0f\",\"service\":\"stalist\"";
-    [self.wsManager send:msg];
+    NSDictionary *param = @{
+            @"lang": @"zh_cn",
+            @"token": @"",
+            @"service": @"connect"
+    };
+    [SGWiNetWSService.shareInstance postParam:param success:^(NSDictionary * _Nonnull result) {
+        NSLog(@"result = %@", result);
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"error = %@", error);
+    }];
 }
 
 @end

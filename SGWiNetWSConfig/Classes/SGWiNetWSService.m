@@ -6,10 +6,13 @@
 //
 
 #import "SGWiNetWSService.h"
+#import <SGWiNetWSConfig/SGWiNetWSOperation.h>
+#import <SGWiNetWSConfig/SGWiNetWSManager.h>
 
 @interface SGWiNetWSService ()
 
 @property (nonatomic, strong) NSOperationQueue *messageQueue;
+@property (nonatomic, strong) SGWiNetWSManager *wsManager;
 
 @end
 
@@ -21,6 +24,32 @@
         _messageQueue.maxConcurrentOperationCount = 1;
     }
     return _messageQueue;
+}
+
+- (SGWiNetWSManager *)wsManager {
+    if (!_wsManager) {
+        _wsManager = [[SGWiNetWSManager alloc] init];
+    }
+    return _wsManager;
+}
+
++ (instancetype)shareInstance {
+    static SGWiNetWSService *this = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        if (!this) {
+            this = [[SGWiNetWSService alloc] init];
+        }
+    });
+    return this;
+}
+
+- (void)reConnectToUrl:(NSURL *)url complete:(void (^)(NSError *error))complete {
+    [self.wsManager reConnectToUrl:url complete:complete];
+}
+
+- (void)disConnectComplete:(void (^)(NSUInteger code , NSString *reason, BOOL wasClean))complete {
+    [self.wsManager disConnectComplete:complete];
 }
 
 - (void)postParam:(NSDictionary *)param success:(void (^)(NSDictionary *result))success failure:(void (^)(NSError *error))failure {
@@ -43,11 +72,8 @@
     [self.messageQueue addOperation:operation];
 }
 
-- (void)setSocket:(SRWebSocket *)socket {
-    for (SGWiNetWSOperation *operation in self.messageQueue.operations) {
-        [operation cancelSend];
-    }
-    _socket = socket;
+- (SRWebSocket *)socket {
+    return self.wsManager.socket;
 }
 
 @end
