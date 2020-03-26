@@ -33,7 +33,7 @@
 - (void)startTimer {
     if (!self.timer) {
         self.timer = [NSTimer timerWithTimeInterval:self.message.timerInterval target:self selector:@selector(executeTimeout) userInfo:nil repeats:NO];
-        [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
+        [[NSRunLoop mainRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
     }
 }
 
@@ -107,6 +107,7 @@
 }
 
 - (void)finish {
+    [self stopTimer];
     [self removeNotification];
     [self changeExecuting:NO];
     [self changeFinished:YES];
