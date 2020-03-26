@@ -11,6 +11,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SGWiNetWSManager : NSObject
 
+- (void)open;
+
+- (void)close;
+
+- (void)send:(id)data;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -7,23 +7,37 @@
 //
 
 #import "SGViewController.h"
+#import <SGWiNetWSConfig/SGWiNetWSManager.h>
 
 @interface SGViewController ()
+
+@property (nonatomic, strong) SGWiNetWSManager *wsManager;
 
 @end
 
 @implementation SGViewController
 
+- (SGWiNetWSManager *)wsManager {
+    if (!_wsManager) {
+        _wsManager = [[SGWiNetWSManager alloc] init];
+    }
+    return _wsManager;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+    [self wsManager];
+	
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (IBAction)connectAction:(UIButton *)sender {
+    [self.wsManager send:@"{\"lang\":\"zh_cn\",\"token\":\"\",\"service\":\"connect\"}"];
+}
+
+- (void)staList {
+    NSString *msg = @"\"lang\":\"zh_cn\",\"token\":\"1193_36c55764-8e88-477d-94aa-6601da7e4d0f\",\"service\":\"stalist\"";
+    [self.wsManager send:msg];
 }
 
 @end
