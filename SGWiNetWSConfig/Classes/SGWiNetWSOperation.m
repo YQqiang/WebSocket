@@ -55,16 +55,20 @@
         [self executeCancel];
         return;
     }
-    if (self.socket.readyState != SR_OPEN) {
-        NSError *error = [[NSError alloc] initWithDomain:@"SGWiNetWSOperation.notOpen" code:2020032501 userInfo:@{}];
-        [self executeFailure:error];
-        return;
+    if (self.message.type == SGSendMessageTypeWebSocket) {
+        if (self.socket.readyState != SR_OPEN) {
+            NSError *error = [[NSError alloc] initWithDomain:@"SGWiNetWSOperation.notOpen" code:2020032501 userInfo:@{}];
+            [self executeFailure:error];
+            return;
+        }
+        [self addNotification];
+        [self webSocketSend];
+    } else {
+        [self httpSend];
     }
-    [self addNotification];
-    [self sendMessage];
 }
 
-- (void)sendMessage {
+- (void)webSocketSend {
     NSError *error;
     NSData *data = [NSJSONSerialization dataWithJSONObject:self.message.parameters options:NSJSONWritingPrettyPrinted error:&error];
     if (error) {
@@ -133,6 +137,72 @@
     self.willCancel = YES;
 }
 
+#pragma mark - http
+- (void)httpSend {
+    if (self.message.url.length <= 0) {
+        NSError *error = [[NSError alloc] initWithDomain:@"SGWiNetWSOperation.url.notset" code:2020032701 userInfo:@{}];
+        [self executeFailure:error];
+        return;
+    }
+    NSURL *url = [NSURL URLWithString:self.message.url];
+    if (!url) {
+        NSError *error = [[NSError alloc] initWithDomain:@"SGWiNetWSOperation.url.error" code:2020032702 userInfo:@{}];
+        [self executeFailure:error];
+        return;
+    }
+    void (^complete)(NSData *data, NSURLResponse *response, NSError *error) = ^void(NSData *data, NSURLResponse *response, NSError *error) {
+        if (error) {
+            [self executeFailure:error];
+        } else {
+            NSError *error;
+            NSDictionary *result = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingFragmentsAllowed error:&error];
+            if (error) {
+                [self executeFailure:error];
+            } else {
+                [self executeSucces:result];
+            }
+        }
+    };
+    if (self.message.type == SGSendMessageTypeHttpGet) {
+        [self httpGet:url complete:complete];
+    } else if (self.message.type == SGSendMessageTypeHttpPost) {
+        [self httpPost:url complete:complete];
+    }
+}
+
+- (void)httpPost:(NSURL *)url complete:(void (^)(NSData * data, NSURLResponse *response, NSError * error))complete {
+    NSURLSession *session = [NSURLSession sharedSession];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    request.HTTPMethod = @"POST";
+    request.HTTPBody = [[self parametersJoined] dataUsingEncoding:NSUTF8StringEncoding];
+    request.timeoutInterval = self.message.timerInterval;
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:complete];
+    [dataTask resume];
+}
+
+- (void)httpGet:(NSURL *)url complete:(void (^)(NSData * data, NSURLResponse *response, NSError * error))complete {
+    NSString *params = [self parametersJoined];
+    if (params.length > 0) {
+        NSString *finalUrlStr = [NSString stringWithFormat:@"%@?%@", url.absoluteString, params];
+        url = [NSURL URLWithString:finalUrlStr];
+    }
+    NSURLSession *session = [NSURLSession sharedSession];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    request.HTTPMethod = @"GET";
+    request.timeoutInterval = self.message.timerInterval;
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:complete];
+    [dataTask resume];
+}
+
+- (NSString *)parametersJoined {
+    NSMutableArray <NSString *>*keyValues = [NSMutableArray array];
+    for (NSString *key in self.message.parameters.allKeys) {
+        [keyValues addObject:[NSString stringWithFormat:@"%@=%@", key, self.message.parameters[key]]];
+    }
+    return [keyValues componentsJoinedByString:@"&"];
+}
+
+#pragma mark - excute block
 - (void)executeCancel {
     [self finish];
     if (self.message.cancel) {

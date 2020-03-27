@@ -12,6 +12,11 @@
 @interface SGDetailViewController ()
 @property (weak, nonatomic) IBOutlet UITextView *requestTextView;
 @property (weak, nonatomic) IBOutlet UITextView *responseTextView;
+@property (weak, nonatomic) IBOutlet UIButton *wsBtn;
+@property (weak, nonatomic) IBOutlet UIButton *getBtn;
+@property (weak, nonatomic) IBOutlet UIButton *postBtn;
+@property (weak, nonatomic) IBOutlet UIStackView *urlStack;
+@property (weak, nonatomic) IBOutlet UITextView *urlTextView;
 
 @end
 
@@ -26,6 +31,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.requestTextView.text = @"service,stalist";
+    self.urlTextView.text = @"http://11.11.11.1/";
 }
 
 - (void)showResponse:(NSString *)msg {
@@ -45,15 +51,44 @@
             [dic setValue:kv.lastObject forKey:kv.firstObject];
         }
     }
-    [SGWiNetWSService.shareInstance postParam:dic success:^(NSDictionary * _Nonnull result) {
+    
+    void (^success)(NSDictionary * _Nonnull result) = ^void(NSDictionary * _Nonnull result) {
         [self showResponse:[NSString stringWithFormat:@"%@", result]];
-    } failure:^(NSError * _Nonnull error) {
+    };
+    void (^failure)(NSError * _Nonnull error) = ^void(NSError * _Nonnull error) {
         [self showResponse:[NSString stringWithFormat:@"%@", error]];
-    }];
+    };
+    NSString *url = self.urlTextView.text;
+    if (self.wsBtn.selected) {
+        [SGWiNetWSService.shareInstance webSocketSend:dic success:success failure:failure];
+    } else if (self.getBtn.selected) {
+        [SGWiNetWSService.shareInstance httpGetSend:url param:dic success:success failure:failure];
+    } else if (self.postBtn.selected) {
+        [SGWiNetWSService.shareInstance httpPostSend:url param:dic success:success failure:failure];
+    }
 }
 
 - (IBAction)dismissKeyboard:(UIButton *)sender {
     [self.view endEditing:YES];
+}
+
+- (IBAction)wsBtnAction:(UIButton *)sender {
+    [self selectedButton:sender];
+}
+
+- (IBAction)getBtnAction:(UIButton *)sender {
+    [self selectedButton:sender];
+}
+
+- (IBAction)postBtnAction:(UIButton *)sender {
+    [self selectedButton:sender];
+}
+
+- (void)selectedButton:(UIButton *)sender {
+    self.wsBtn.selected = sender == self.wsBtn;
+    self.getBtn.selected = sender == self.getBtn;
+    self.postBtn.selected = sender == self.postBtn;
+    self.urlStack.hidden = self.wsBtn.selected;
 }
 
 - (IBAction)clearRequest:(UIButton *)sender {

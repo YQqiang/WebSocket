@@ -10,6 +10,7 @@
 @interface SGWiNetWSMessage ()
 
 @property (nonatomic, copy) NSString *uuid;
+@property (nonatomic, assign) SGSendMessageType type;
 @property (nonatomic, strong) NSDictionary *parameters;
 @property (nonatomic, assign) NSInteger timerInterval;
 @property (nonatomic, copy) void (^success)(NSDictionary *result);
@@ -26,8 +27,9 @@
     return nil;
 }
 
-- (instancetype)initWithParameters:(NSDictionary *)parameters timerInterval:(NSInteger)timerInterval success:(void (^)(NSDictionary * _Nonnull))success failure:(void (^)(NSError * _Nonnull))failure timeout:(void (^)(void))timeout cancel:(void (^)(void))cancel {
+- (instancetype)initWithType:(SGSendMessageType)type Parameters:(NSDictionary *)parameters timerInterval:(NSInteger)timerInterval success:(void (^)(NSDictionary * _Nonnull))success failure:(void (^)(NSError * _Nonnull))failure timeout:(void (^)(void))timeout cancel:(void (^)(void))cancel {
     if (self = [super init]) {
+        self.type = type;
         self.parameters = parameters;
         self.timerInterval = timerInterval;
         self.success = success;

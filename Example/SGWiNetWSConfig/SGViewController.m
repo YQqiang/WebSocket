@@ -12,7 +12,7 @@
 
 @interface SGViewController ()<UITextViewDelegate>
 @property (weak, nonatomic) IBOutlet UITextView *textView;
-@property (weak, nonatomic) IBOutlet UILabel *msgLabel;
+@property (weak, nonatomic) IBOutlet UITextView *responseTextView;
 
 @property (nonatomic, copy) NSString *token;
 
@@ -49,7 +49,7 @@
             @"token": @"",
             @"service": @"connect"
     };
-    [SGWiNetWSService.shareInstance postParam:param success:^(NSDictionary * _Nonnull result) {
+    [SGWiNetWSService.shareInstance webSocketSend:param success:^(NSDictionary * _Nonnull result) {
         [self showMessage:[NSString stringWithFormat:@"%@", result]];
         self.token = result[@"result_data"][@"token"];
     } failure:^(NSError * _Nonnull error) {
@@ -58,13 +58,18 @@
 }
 
 - (IBAction)sendTestAction:(UIButton *)sender {
+//    [SGWiNetWSService.shareInstance httpGetSend:@"http://11.11.11.1/wifi/getStaEnable" param:@{@"token": self.token, @"lang": @"zh_cn"} success:^(NSDictionary * _Nonnull result) {
+//        [self showMessage:[NSString stringWithFormat:@"%@", result]];
+//    } failure:^(NSError * _Nonnull error) {
+//        [self showMessage:[NSString stringWithFormat:@"%@", error]];
+//    }];
     SGDetailViewController *vc = [SGDetailViewController detailViewController];
     vc.token = self.token;
     [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)showMessage:(NSString *)msg {
-    self.msgLabel.text = msg;
+    self.responseTextView.text = msg;
 }
 
 #pragma mark - UITextViewDelegate

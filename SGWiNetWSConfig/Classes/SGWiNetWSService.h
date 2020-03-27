@@ -17,7 +17,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)disConnectComplete:(void (^)(NSUInteger code , NSString *reason, BOOL wasClean))complete;
 
-- (void)postParam:(NSDictionary *)param success:(void (^)(NSDictionary *result))success failure:(void (^)(NSError *error))failure;
+- (void)webSocketSend:(NSDictionary *)param success:(void (^)(NSDictionary *result))success failure:(void (^)(NSError *error))failure;
+
+- (void)httpGetSend:(NSString *)url param:(NSDictionary *)param success:(void (^)(NSDictionary *result))success failure:(void (^)(NSError *error))failure;
+
+- (void)httpPostSend:(NSString *)url param:(NSDictionary *)param success:(void (^)(NSDictionary *result))success failure:(void (^)(NSError *error))failure;
 
 @end
 

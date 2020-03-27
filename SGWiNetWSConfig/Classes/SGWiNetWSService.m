@@ -52,18 +52,38 @@
     [self.wsManager disConnectComplete:complete];
 }
 
-- (void)postParam:(NSDictionary *)param success:(void (^)(NSDictionary *result))success failure:(void (^)(NSError *error))failure {
-    SGWiNetWSMessage *message = [[SGWiNetWSMessage alloc] initWithParameters:param timerInterval:3 success:success failure:failure timeout:^{
+- (void)webSocketSend:(NSDictionary *)param success:(void (^)(NSDictionary *result))success failure:(void (^)(NSError *error))failure {
+    SGWiNetWSMessage *message = [[SGWiNetWSMessage alloc] initWithType:SGSendMessageTypeWebSocket Parameters:param timerInterval:3 success:success failure:failure timeout:^{
         NSError *error = [[NSError alloc] initWithDomain:@"SGWiNetWSOperation.timeout" code:2020032503 userInfo:@{}];
         !failure ?: failure(error);
     } cancel:^{
         NSError *error = [[NSError alloc] initWithDomain:@"SGWiNetWSOperation.cancel" code:2020032504 userInfo:@{}];
         !failure ?: failure(error);
     }];
-    [self postMessage:message];
+    [self sendMessage:message];
 }
 
-- (void)postMessage:(SGWiNetWSMessage *)message {
+- (void)httpGetSend:(NSString *)url param:(NSDictionary *)param success:(void (^)(NSDictionary *result))success failure:(void (^)(NSError *error))failure {
+    [self httpSendType:SGSendMessageTypeHttpGet url:url param:param success:success failure:failure];
+}
+
+- (void)httpPostSend:(NSString *)url param:(NSDictionary *)param success:(void (^)(NSDictionary *result))success failure:(void (^)(NSError *error))failure {
+    [self httpSendType:SGSendMessageTypeHttpPost url:url param:param success:success failure:failure];
+}
+
+- (void)httpSendType:(SGSendMessageType)type url:(NSString *)url param:(NSDictionary *)param success:(void (^)(NSDictionary *result))success failure:(void (^)(NSError *error))failure {
+    SGWiNetWSMessage *message = [[SGWiNetWSMessage alloc] initWithType:type Parameters:param timerInterval:3 success:success failure:failure timeout:^{
+        NSError *error = [[NSError alloc] initWithDomain:@"SGWiNetWSOperation.timeout" code:2020032503 userInfo:@{}];
+        !failure ?: failure(error);
+    } cancel:^{
+        NSError *error = [[NSError alloc] initWithDomain:@"SGWiNetWSOperation.cancel" code:2020032504 userInfo:@{}];
+        !failure ?: failure(error);
+    }];
+    message.url = url;
+    [self sendMessage:message];
+}
+
+- (void)sendMessage:(SGWiNetWSMessage *)message {
     SGWiNetWSOperation *operation = [[SGWiNetWSOperation alloc] initWithSocket:self.socket message:message];
     [self addOperation:operation];
 }
