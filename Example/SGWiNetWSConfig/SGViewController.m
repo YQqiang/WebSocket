@@ -23,38 +23,41 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.textView.text = @"ws://11.11.11.1/ws/home/overview";
-    [self reConnect];
+    [self connectAction:nil];
 }
 
-- (void)reConnect {
+- (IBAction)connectAction:(UIButton *)sender {
     NSString *text = self.textView.text;
     [SGWiNetWSService.shareInstance reConnectToUrl:[NSURL URLWithString:text] complete:^(NSError * _Nonnull error) {
         if (error) {
-            NSLog(@"连接失败 error = %@", error);
+            [self showMessage:[NSString stringWithFormat:@"连接失败 error = %@", error]];
         } else {
-            NSLog(@"连接成功");
+            [self showMessage:@"连接成功"];
         }
     }];
 }
 
-- (IBAction)connectAction:(UIButton *)sender {
+- (IBAction)disconnectAction:(UIButton *)sender {
+    [SGWiNetWSService.shareInstance disConnectComplete:^(NSUInteger code, NSString * _Nonnull reason, BOOL wasClean) {
+        [self showMessage:[NSString stringWithFormat:@"code = %zd\nreason = %@\nwasClean = %@", code, reason, @(wasClean)]];
+    }];
+}
+
+- (IBAction)getTokenAction:(UIButton *)sender {
     NSDictionary *param = @{
             @"lang": @"zh_cn",
             @"token": @"",
             @"service": @"connect"
     };
     [SGWiNetWSService.shareInstance postParam:param success:^(NSDictionary * _Nonnull result) {
-        NSLog(@"result = %@", result);
         [self showMessage:[NSString stringWithFormat:@"%@", result]];
         self.token = result[@"result_data"][@"token"];
-        [self goToDetailViewController];
     } failure:^(NSError * _Nonnull error) {
-        NSLog(@"error = %@", error);
         [self showMessage:[NSString stringWithFormat:@"%@", error]];
     }];
 }
 
-- (void)goToDetailViewController {
+- (IBAction)sendTestAction:(UIButton *)sender {
     SGDetailViewController *vc = [SGDetailViewController detailViewController];
     vc.token = self.token;
     [self.navigationController pushViewController:vc animated:YES];

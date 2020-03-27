@@ -136,28 +136,36 @@
 - (void)executeCancel {
     [self finish];
     if (self.message.cancel) {
-        self.message.cancel();
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.message.cancel();
+        });
     }
 }
 
 - (void)executeTimeout {
     [self finish];
     if (self.message.timeout) {
-        self.message.timeout();
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.message.timeout();
+        });
     }
 }
 
 - (void)executeSucces:(NSDictionary *)result {
     [self finish];
     if (self.message.success) {
-        self.message.success(result);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.message.success(result);
+        });
     }
 }
 
 - (void)executeFailure:(NSError *)error {
     [self finish];
     if (self.message.failure) {
-        self.message.failure(error);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.message.failure(error);
+        });
     }
 }
 
