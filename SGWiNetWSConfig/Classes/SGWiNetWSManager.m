@@ -25,14 +25,6 @@
     return _socket;
 }
 
-//- (instancetype)init {
-//    if (self = [super init]) {
-//        [self reConnectToUrl:[NSURL URLWithString:@"ws://11.11.11.1/ws/home/overview"] complete:^(NSError * _Nonnull error) {
-//        }];
-//    }
-//    return self;
-//}
-
 - (void)reConnectToUrl:(NSURL *)url complete:(void (^)(NSError *error))complete {
     [self close];
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
