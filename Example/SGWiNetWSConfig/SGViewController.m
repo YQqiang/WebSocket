@@ -58,11 +58,6 @@
 }
 
 - (IBAction)sendTestAction:(UIButton *)sender {
-//    [SGWiNetWSService.shareInstance httpGetSend:@"http://11.11.11.1/wifi/getStaEnable" param:@{@"token": self.token, @"lang": @"zh_cn"} success:^(NSDictionary * _Nonnull result) {
-//        [self showMessage:[NSString stringWithFormat:@"%@", result]];
-//    } failure:^(NSError * _Nonnull error) {
-//        [self showMessage:[NSString stringWithFormat:@"%@", error]];
-//    }];
     SGDetailViewController *vc = [SGDetailViewController detailViewController];
     vc.token = self.token;
     [self.navigationController pushViewController:vc animated:YES];
