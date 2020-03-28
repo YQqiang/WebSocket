@@ -30,8 +30,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.requestTextView.text = @"service,stalist";
-    self.urlTextView.text = @"http://11.11.11.1/";
 }
 
 - (void)showResponse:(NSString *)msg {

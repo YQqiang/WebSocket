@@ -22,8 +22,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.textView.text = @"ws://11.11.11.1/ws/home/overview";
-    [self connectAction:nil];
 }
 
 - (IBAction)connectAction:(UIButton *)sender {
