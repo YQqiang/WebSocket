@@ -15,7 +15,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  SGWiNetWSConfig: 56835ae9e6e82ef9c8bc5fa41b9428ddfd09a9ea
+  SGWiNetWSConfig: a56ce372ca39b25a66ceec3cefcb46fc85a8e18d
   SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
 
 PODFILE CHECKSUM: 4a73866ad5c3d1f135c44d13adb01e8ff97679dc

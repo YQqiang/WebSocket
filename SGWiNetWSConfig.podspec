@@ -21,11 +21,11 @@ Pod::Spec.new do |s|
 SG WiNet Web Socket Config
                        DESC
 
-  s.homepage         = 'https://github.com/1054572107@qq.com/SGWiNetWSConfig'
+  s.homepage         = 'https://github.com/YQqiang/WebSocket'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'sungrow@sungrowpower.com' => 'sungrow@sungrowpower.com' }
-  s.source           = { :git => 'https://github.com/sungrow@sungrowpower.com/SGWiNetWSConfig.git', :tag => s.version.to_s }
+  s.author           = { '1054572107@qq.com' => '1054572107@qq.com' }
+  s.source           = { :git => 'https://github.com/YQqiang/WebSocket.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '9.3'
