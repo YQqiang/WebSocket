@@ -5,6 +5,13 @@
 [![License](https://img.shields.io/cocoapods/l/SGWiNetWSConfig.svg?style=flat)](https://cocoapods.org/pods/SGWiNetWSConfig)
 [![Platform](https://img.shields.io/cocoapods/p/SGWiNetWSConfig.svg?style=flat)](https://cocoapods.org/pods/SGWiNetWSConfig)
 
+## PreView
+
+
+| ![](https://github.com/YQqiang/WebSocket/blob/master/connect.PNG) | ![](https://github.com/YQqiang/WebSocket/blob/master/sendmessage.PNG) |
+| --- | --- |
+
+
 ## Example
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
@@ -27,3 +34,5 @@ pod 'SGWiNetWSConfig'
 ## License
 
 SGWiNetWSConfig is available under the MIT license. See the LICENSE file for more info.
+
+
