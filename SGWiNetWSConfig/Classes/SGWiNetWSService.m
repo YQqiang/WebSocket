@@ -96,4 +96,10 @@
     return self.wsManager.socket;
 }
 
+- (void)cancelTransferQueue {
+    for (SGWiNetWSOperation *operation in self.messageQueue.operations) {
+        [operation cancelSend];
+    }
+}
+
 @end

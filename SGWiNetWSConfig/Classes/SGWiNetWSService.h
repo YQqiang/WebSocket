@@ -23,6 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)httpPostSend:(NSString *)url param:(NSDictionary *)param success:(void (^)(NSDictionary *result))success failure:(void (^)(NSError *error))failure;
 
+- (void)cancelTransferQueue;
+
 @end
 
 NS_ASSUME_NONNULL_END
