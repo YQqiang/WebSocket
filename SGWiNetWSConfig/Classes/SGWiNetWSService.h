@@ -11,6 +11,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SGWiNetWSService : NSObject
 
+@property (nonatomic, strong, readonly) NSOperationQueue *messageQueue;;
+
 + (instancetype)shareInstance;
 
 - (void)reConnectToUrl:(NSURL *)url complete:(void (^)(NSError *error))complete;
