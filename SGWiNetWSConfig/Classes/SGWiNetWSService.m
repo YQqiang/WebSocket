@@ -21,7 +21,7 @@
 - (NSOperationQueue *)messageQueue {
     if (!_messageQueue) {
         _messageQueue = [[NSOperationQueue alloc] init];
-        _messageQueue.maxConcurrentOperationCount = 1;
+        _messageQueue.maxConcurrentOperationCount = 10;
     }
     return _messageQueue;
 }
@@ -53,7 +53,7 @@
 }
 
 - (void)webSocketSend:(NSDictionary *)param success:(void (^)(NSDictionary *result))success failure:(void (^)(NSError *error))failure {
-    SGWiNetWSMessage *message = [[SGWiNetWSMessage alloc] initWithType:SGSendMessageTypeWebSocket Parameters:param timerInterval:3 success:success failure:failure timeout:^{
+    SGWiNetWSMessage *message = [[SGWiNetWSMessage alloc] initWithType:SGSendMessageTypeWebSocket Parameters:param timerInterval:10 success:success failure:failure timeout:^{
         NSError *error = [[NSError alloc] initWithDomain:@"SGWiNetWSOperation.timeout" code:2020032503 userInfo:@{}];
         !failure ?: failure(error);
     } cancel:^{
