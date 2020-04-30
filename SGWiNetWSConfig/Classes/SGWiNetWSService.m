@@ -53,7 +53,7 @@
 }
 
 - (void)webSocketSend:(NSDictionary *)param success:(void (^)(NSDictionary *result))success failure:(void (^)(NSError *error))failure {
-    SGWiNetWSMessage *message = [[SGWiNetWSMessage alloc] initWithType:SGSendMessageTypeWebSocket Parameters:param timerInterval:10 success:success failure:failure timeout:^{
+    SGWiNetWSMessage *message = [[SGWiNetWSMessage alloc] initWithType:SGSendMessageTypeWebSocket Parameters:param timerInterval:3 success:success failure:failure timeout:^{
         NSError *error = [[NSError alloc] initWithDomain:@"SGWiNetWSOperation.timeout" code:2020032503 userInfo:@{}];
         !failure ?: failure(error);
     } cancel:^{
@@ -72,7 +72,7 @@
 }
 
 - (void)httpSendType:(SGSendMessageType)type url:(NSString *)url param:(NSDictionary *)param success:(void (^)(NSDictionary *result))success failure:(void (^)(NSError *error))failure {
-    SGWiNetWSMessage *message = [[SGWiNetWSMessage alloc] initWithType:type Parameters:param timerInterval:3 success:success failure:failure timeout:^{
+    SGWiNetWSMessage *message = [[SGWiNetWSMessage alloc] initWithType:type Parameters:param timerInterval:10 success:success failure:failure timeout:^{
         NSError *error = [[NSError alloc] initWithDomain:@"SGWiNetWSOperation.timeout" code:2020032503 userInfo:@{}];
         !failure ?: failure(error);
     } cancel:^{
