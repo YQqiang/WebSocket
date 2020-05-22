@@ -23,7 +23,7 @@ typedef enum : NSUInteger {
 
 /// SGSendMessageTypeHttpUpload
 @property (nonatomic, strong) NSData *fileData;
-@property (nonatomic, copy, readonly) void (^uploadProgress)(NSProgress *progress);
+@property (nonatomic, copy) void (^uploadProgress)(NSProgress *progress);
 @property (nonatomic, strong, readonly) NSProgress *uploadProgressValue;
 
 @property (nonatomic, assign, readonly) SGSendMessageType type;

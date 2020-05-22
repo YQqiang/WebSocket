@@ -81,6 +81,7 @@
     }];
     message.url = url;
     message.fileData = fileData;
+    message.uploadProgress = progress;
     [self sendMessage:message];
 }
 

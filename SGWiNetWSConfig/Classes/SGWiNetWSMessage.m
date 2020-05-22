@@ -17,7 +17,6 @@
 @property (nonatomic, copy) void (^failure)(NSError *error);
 @property (nonatomic, copy) void (^timeout)(void);
 @property (nonatomic, copy) void (^cancel)(void);
-@property (nonatomic, copy) void (^progress)(NSProgress *progress);
 @property (nonatomic, strong) NSProgress *uploadProgressValue;
 
 @end
