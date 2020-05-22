@@ -17,10 +17,20 @@
 @property (nonatomic, copy) void (^failure)(NSError *error);
 @property (nonatomic, copy) void (^timeout)(void);
 @property (nonatomic, copy) void (^cancel)(void);
+@property (nonatomic, copy) void (^progress)(NSProgress *progress);
+@property (nonatomic, strong) NSProgress *uploadProgressValue;
 
 @end
 
 @implementation SGWiNetWSMessage
+
+#pragma mark - lazy
+- (NSProgress *)uploadProgressValue {
+    if (!_uploadProgressValue) {
+        _uploadProgressValue = [[NSProgress alloc] initWithParent:nil userInfo:nil];
+    }
+    return _uploadProgressValue;
+}
 
 - (instancetype)init {
     NSAssert(NO, @"use initWithParameters: timerInterval: success: failure: timeout: cancel:");

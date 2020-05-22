@@ -13,12 +13,18 @@ typedef enum : NSUInteger {
     SGSendMessageTypeWebSocket,
     SGSendMessageTypeHttpGet,
     SGSendMessageTypeHttpPost,
+    SGSendMessageTypeHttpUpload,
 } SGSendMessageType;
 
 @interface SGWiNetWSMessage : NSObject
 
-/// type = SGSendMessageTypeHttpGet  || SGSendMessageTypeHttpPost, 需要设置请求的url
+/// type = SGSendMessageTypeHttpGet  || SGSendMessageTypeHttpPost || SGSendMessageTypeHttpUpload, 需要设置请求的url
 @property (nonatomic, copy) NSString *url;
+
+/// SGSendMessageTypeHttpUpload
+@property (nonatomic, strong) NSData *fileData;
+@property (nonatomic, copy, readonly) void (^uploadProgress)(NSProgress *progress);
+@property (nonatomic, strong, readonly) NSProgress *uploadProgressValue;
 
 @property (nonatomic, assign, readonly) SGSendMessageType type;
 @property (nonatomic, strong, readonly) NSDictionary *parameters;

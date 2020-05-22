@@ -8,7 +8,7 @@
 #import "SGWiNetWSOperation.h"
 #import <SGWiNetWSConfig/SGWiNetWSNotification.h>
 
-@interface SGWiNetWSOperation ()
+@interface SGWiNetWSOperation ()<NSURLSessionDelegate>
 
 @property (nonatomic, strong) SRWebSocket *socket;
 @property (nonatomic, strong) SGWiNetWSMessage *message;
@@ -167,6 +167,8 @@
         [self httpGet:url complete:complete];
     } else if (self.message.type == SGSendMessageTypeHttpPost) {
         [self httpPost:url complete:complete];
+    } else if (self.message.type == SGSendMessageTypeHttpUpload) {
+        [self httpUpload:url complete:complete];
     }
 }
 
@@ -192,6 +194,16 @@
     request.timeoutInterval = self.message.timerInterval;
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:complete];
     [dataTask resume];
+}
+
+- (NSURLSessionDataTask *)httpUpload:(NSURL *)url complete:(void (^)(NSData * data, NSURLResponse *response, NSError * error))complete {
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setValue:@"text/html" forHTTPHeaderField:@"Content-Type"];
+    request.HTTPMethod = @"POST";
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[NSOperationQueue mainQueue]];
+    NSURLSessionUploadTask *uploadTask = [session uploadTaskWithRequest:request fromData:self.message.fileData completionHandler:complete];
+    [uploadTask resume];
+    return uploadTask;
 }
 
 - (NSString *)parametersJoined {
@@ -237,6 +249,16 @@
             self.message.failure(error);
         });
     }
+}
+
+#pragma mark - NSURLSessionDelegate
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+         didSendBodyData:(int64_t)bytesSent
+          totalBytesSent:(int64_t)totalBytesSent
+totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
+    self.message.uploadProgressValue.totalUnitCount = task.countOfBytesExpectedToSend;
+    self.message.uploadProgressValue.completedUnitCount = task.countOfBytesSent;
+    !self.message.uploadProgress ?: self.message.uploadProgress(self.message.uploadProgressValue);
 }
 
 @end

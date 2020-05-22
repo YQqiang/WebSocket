@@ -71,6 +71,19 @@
     [self httpSendType:SGSendMessageTypeHttpPost url:url param:param success:success failure:failure];
 }
 
+- (void)httpUpload:(NSString *)url fileData:(NSData *)fileData progress:(void (^)(NSProgress *progress))progress success:(void (^)(NSDictionary *result))success failure:(void (^)(NSError *error))failure {
+    SGWiNetWSMessage *message = [[SGWiNetWSMessage alloc] initWithType:SGSendMessageTypeHttpUpload Parameters:@{} timerInterval:30 * 60 success:success failure:failure timeout:^{
+        NSError *error = [[NSError alloc] initWithDomain:@"SGWiNetWSOperation.timeout" code:2020052201 userInfo:@{}];
+        !failure ?: failure(error);
+    } cancel:^{
+        NSError *error = [[NSError alloc] initWithDomain:@"SGWiNetWSOperation.cancel" code:2020052202 userInfo:@{}];
+        !failure ?: failure(error);
+    }];
+    message.url = url;
+    message.fileData = fileData;
+    [self sendMessage:message];
+}
+
 - (void)httpSendType:(SGSendMessageType)type url:(NSString *)url param:(NSDictionary *)param success:(void (^)(NSDictionary *result))success failure:(void (^)(NSError *error))failure {
     SGWiNetWSMessage *message = [[SGWiNetWSMessage alloc] initWithType:type Parameters:param timerInterval:10 success:success failure:failure timeout:^{
         NSError *error = [[NSError alloc] initWithDomain:@"SGWiNetWSOperation.timeout" code:2020032503 userInfo:@{}];
