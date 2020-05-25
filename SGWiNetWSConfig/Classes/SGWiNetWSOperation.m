@@ -176,7 +176,12 @@
     NSURLSession *session = [NSURLSession sharedSession];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     request.HTTPMethod = @"POST";
-    request.HTTPBody = [[self parametersJoined] dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self.message.parameters options:NSJSONWritingPrettyPrinted error:&error];
+    if (!jsonData) {
+        jsonData = [[self parametersJoined] dataUsingEncoding:NSUTF8StringEncoding];
+    }
+    request.HTTPBody = jsonData;
     request.timeoutInterval = self.message.timerInterval;
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:complete];
     [dataTask resume];
