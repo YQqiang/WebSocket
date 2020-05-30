@@ -14,6 +14,7 @@ typedef enum : NSUInteger {
     SGSendMessageTypeHttpGet,
     SGSendMessageTypeHttpPost,
     SGSendMessageTypeHttpUpload,
+    SGSendMessageTypeHttpDownload,
 } SGSendMessageType;
 
 @interface SGWiNetWSMessage : NSObject
@@ -25,6 +26,11 @@ typedef enum : NSUInteger {
 @property (nonatomic, strong) NSData *fileData;
 @property (nonatomic, copy) void (^uploadProgress)(NSProgress *progress);
 @property (nonatomic, strong, readonly) NSProgress *uploadProgressValue;
+
+/// SGSendMessageTypeHttpDownload
+@property (nonatomic, copy) void (^downloadComplete)(NSURLResponse * response, NSURL * filePath, NSError * error);
+@property (nonatomic, copy) void (^downloadProgress)(NSProgress *progress);
+@property (nonatomic, strong, readonly) NSProgress *downloadProgressValue;
 
 @property (nonatomic, assign, readonly) SGSendMessageType type;
 @property (nonatomic, strong, readonly) NSDictionary *parameters;

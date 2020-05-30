@@ -85,6 +85,22 @@
     [self sendMessage:message];
 }
 
+- (void)httpDownload:(NSString *)url progress:(void (^)(NSProgress *progress))progress complete:(void (^)(NSURLResponse * response, NSURL * filePath, NSError * error))complete {
+    SGWiNetWSMessage *message = [[SGWiNetWSMessage alloc] initWithType:SGSendMessageTypeHttpDownload Parameters:@{} timerInterval:30 * 60 success:^(NSDictionary * _Nonnull result) {
+    } failure:^(NSError * _Nonnull error) {
+    } timeout:^{
+        NSError *error = [[NSError alloc] initWithDomain:@"SGWiNetWSOperation.timeout" code:2020053001 userInfo:@{}];
+        !complete ?: complete(nil, nil, error);
+    } cancel:^{
+        NSError *error = [[NSError alloc] initWithDomain:@"SGWiNetWSOperation.cancel" code:2020053002 userInfo:@{}];
+        !complete ?: complete(nil, nil, error);
+    }];
+    message.url = url;
+    message.downloadProgress = progress;
+    message.downloadComplete = complete;
+    [self sendMessage:message];
+}
+
 - (void)httpSendType:(SGSendMessageType)type url:(NSString *)url param:(NSDictionary *)param success:(void (^)(NSDictionary *result))success failure:(void (^)(NSError *error))failure {
     SGWiNetWSMessage *message = [[SGWiNetWSMessage alloc] initWithType:type Parameters:param timerInterval:10 success:success failure:failure timeout:^{
         NSError *error = [[NSError alloc] initWithDomain:@"SGWiNetWSOperation.timeout" code:2020032503 userInfo:@{}];

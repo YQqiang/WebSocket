@@ -18,6 +18,7 @@
 @property (nonatomic, copy) void (^timeout)(void);
 @property (nonatomic, copy) void (^cancel)(void);
 @property (nonatomic, strong) NSProgress *uploadProgressValue;
+@property (nonatomic, strong) NSProgress *downloadProgressValue;
 
 @end
 
@@ -29,6 +30,13 @@
         _uploadProgressValue = [[NSProgress alloc] initWithParent:nil userInfo:nil];
     }
     return _uploadProgressValue;
+}
+
+- (NSProgress *)downloadProgressValue {
+    if (!_downloadProgressValue) {
+        _downloadProgressValue = [[NSProgress alloc] initWithParent:nil userInfo:nil];
+    }
+    return _downloadProgressValue;
 }
 
 - (instancetype)init {

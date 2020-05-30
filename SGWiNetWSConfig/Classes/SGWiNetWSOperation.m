@@ -8,7 +8,7 @@
 #import "SGWiNetWSOperation.h"
 #import <SGWiNetWSConfig/SGWiNetWSNotification.h>
 
-@interface SGWiNetWSOperation ()<NSURLSessionDelegate>
+@interface SGWiNetWSOperation ()<NSURLSessionDelegate, NSURLSessionDownloadDelegate>
 
 @property (nonatomic, strong) SRWebSocket *socket;
 @property (nonatomic, strong) SGWiNetWSMessage *message;
@@ -169,6 +169,8 @@
         [self httpPost:url complete:complete];
     } else if (self.message.type == SGSendMessageTypeHttpUpload) {
         [self httpUpload:url complete:complete];
+    } else if (self.message.type == SGSendMessageTypeHttpDownload) {
+        [self httpDownload:url complete:nil];
     }
 }
 
@@ -209,6 +211,15 @@
     NSURLSessionUploadTask *uploadTask = [session uploadTaskWithRequest:request fromData:self.message.fileData completionHandler:complete];
     [uploadTask resume];
     return uploadTask;
+}
+
+- (NSURLSessionDownloadTask *)httpDownload:(NSURL *)url complete:(void (^)(NSData * data, NSURLResponse *response, NSError * error))complete {
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    request.HTTPMethod = @"GET";
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[NSOperationQueue mainQueue]];
+    NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithRequest:request];
+    [downloadTask resume];
+    return downloadTask;
 }
 
 - (NSString *)parametersJoined {
@@ -264,6 +275,31 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
     self.message.uploadProgressValue.totalUnitCount = task.countOfBytesExpectedToSend;
     self.message.uploadProgressValue.completedUnitCount = task.countOfBytesSent;
     !self.message.uploadProgress ?: self.message.uploadProgress(self.message.uploadProgressValue);
+}
+
+#pragma mark - NSURLSessionDownloadDelegate
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location {
+    [self finish];
+    if (self.message.downloadComplete) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.message.downloadComplete(downloadTask.response, location, nil);
+        });
+    }
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
+    [self finish];
+    if (self.message.downloadComplete) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.message.downloadComplete(task.response, nil, error);
+        });
+    }
+}
+
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
+    self.message.downloadProgressValue.totalUnitCount = downloadTask.countOfBytesExpectedToSend;
+    self.message.downloadProgressValue.completedUnitCount = downloadTask.countOfBytesSent;
+    !self.message.downloadProgress ?: self.message.downloadProgress(self.message.downloadProgressValue);
 }
 
 @end

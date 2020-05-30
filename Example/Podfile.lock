@@ -1,5 +1,5 @@
 PODS:
-  - SGWiNetWSConfig (0.0.6):
+  - SGWiNetWSConfig (0.0.9):
     - SocketRocket
   - SocketRocket (0.5.1)
 
@@ -15,9 +15,9 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  SGWiNetWSConfig: 01310aefcc13843a5bd0be5542304d8d15c5b31c
+  SGWiNetWSConfig: 79071dfe2156ebd7106590194aff47f91c7c3908
   SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
 
 PODFILE CHECKSUM: 4a73866ad5c3d1f135c44d13adb01e8ff97679dc
 
-COCOAPODS: 1.8.3
+COCOAPODS: 1.8.4
