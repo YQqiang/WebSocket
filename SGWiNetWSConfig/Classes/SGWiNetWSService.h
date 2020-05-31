@@ -27,6 +27,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)httpUpload:(NSString *)url fileData:(NSData *)fileData progress:(void (^)(NSProgress *progress))progress success:(void (^)(NSDictionary *result))success failure:(void (^)(NSError *error))failure;
 
+- (void)httpDownload:(NSString *)url progress:(void (^)(NSProgress *progress))progress complete:(void (^)(NSURLResponse * response, NSURL * filePath, NSError * error))complete;
+
 - (void)cancelTransferQueue;
 
 @end
