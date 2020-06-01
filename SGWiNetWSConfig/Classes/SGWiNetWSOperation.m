@@ -281,9 +281,7 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location {
     [self finish];
     if (self.message.downloadComplete) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.message.downloadComplete(downloadTask.response, location, nil);
-        });
+        self.message.downloadComplete(downloadTask.response, location, nil);
     }
 }
 

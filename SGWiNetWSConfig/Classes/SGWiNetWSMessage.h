@@ -28,7 +28,7 @@ typedef enum : NSUInteger {
 @property (nonatomic, strong, readonly) NSProgress *uploadProgressValue;
 
 /// SGSendMessageTypeHttpDownload
-@property (nonatomic, copy) void (^downloadComplete)(NSURLResponse * response, NSURL * filePath, NSError * error);
+@property (nonatomic, copy) void (^downloadComplete)(NSURLResponse * response, NSURL * _Nullable filePath, NSError * _Nullable error);
 @property (nonatomic, copy) void (^downloadProgress)(NSProgress *progress);
 @property (nonatomic, strong, readonly) NSProgress *downloadProgressValue;
 
