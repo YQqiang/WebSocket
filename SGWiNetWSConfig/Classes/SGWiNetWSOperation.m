@@ -279,18 +279,20 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
 
 #pragma mark - NSURLSessionDownloadDelegate
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location {
-    [self finish];
     if (self.message.downloadComplete) {
         self.message.downloadComplete(downloadTask.response, location, nil);
     }
+    [self finish];
 }
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
-    [self finish];
-    if (self.message.downloadComplete) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.message.downloadComplete(task.response, nil, error);
-        });
+    if (error) {
+        if (self.message.downloadComplete) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.message.downloadComplete(task.response, nil, error);
+            });
+        }
+        [self finish];
     }
 }
 
